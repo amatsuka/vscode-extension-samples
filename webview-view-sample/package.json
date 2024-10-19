@@ -22,12 +22,64 @@
 	"activationEvents": [],
 	"main": "./out/extension.js",
 	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "My Extension Settings",
+			"properties": {
+				"calicoColors.servers": {
+					"default":  [{
+						"name": "Production Server",
+						"url": "http://foo",
+						"users": ["1", "2", "3"]
+						
+					},
+					{
+						"name": "Develop Server",
+						"url": "http://bar",
+						"users": ["4", "5", "6"]
+						
+					}],
+					"type": "array",
+					"description": "List of servers and their configurations.",
+					"items": {
+						"type": "object",
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "The name of the server"
+							},
+							"url": {
+								"type": "string",
+								"description": "The url of the server"
+							},
+							"users": {
+								"type": "array",
+								"description": "Users",
+								"items": {
+									"type":"string",
+									"description": "User id"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
 		"views": {
-			"explorer": [
+			"calicoColors": [
 				{
 					"type": "webview",
 					"id": "calicoColors.colorsView",
 					"name": "Calico Colors"
+				}
+			]
+		},
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"icon": "media/cat.svg",
+					"id": "calicoColors",
+					"title": "Colors"
 				}
 			]
 		},

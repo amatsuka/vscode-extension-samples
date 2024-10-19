@@ -2,6 +2,9 @@ import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
 
+	const config = vscode.workspace.getConfiguration('calicoColors');
+	const servers = config.get<ServerConfig[]>('servers');
+
 	const provider = new ColorsViewProvider(context.extensionUri);
 
 	context.subscriptions.push(
@@ -16,6 +19,12 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('calicoColors.clearColors', () => {
 			provider.clearColors();
 		}));
+}
+
+interface ServerConfig {
+    name: string;
+    url: string;
+    users: string[];
 }
 
 class ColorsViewProvider implements vscode.WebviewViewProvider {
@@ -44,7 +53,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 			]
 		};
 
-		webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+		webviewView.webview.html = this._getHtmlForWebview(webviewView.webview, vscode.workspace.getConfiguration("calicoColors"));
 
 		webviewView.webview.onDidReceiveMessage(data => {
 			switch (data.type) {
@@ -70,7 +79,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 		}
 	}
 
-	private _getHtmlForWebview(webview: vscode.Webview) {
+	private _getHtmlForWebview(webview: vscode.Webview, config: object) {
 		// Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
 		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
 
@@ -103,10 +112,33 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 				<title>Cat Colors</title>
 			</head>
 			<body>
+				<div id="config">${JSON.stringify(config)}</div>
 				<ul class="color-list">
 				</ul>
-
+		
 				<button class="add-color-button">Add Color</button>
+
+				<label for="server">Server</label>
+				<select id="server" name="server">
+				</select>
+
+				<br><br>
+
+				<label for="state_id">State ID:</label>
+				<select id="state_id" name="state_id">
+				</select>
+
+				<button id="set_state">SET</button>
+				<button id="get_state">GET</button>
+
+				<label for="login">Login:</label>
+
+				<input type="text" id="login" name="login" placeholder="Enter your login">
+				<br>
+
+				<label for="password">Password:</label>
+				<input type="password" id="password" name="password" placeholder="Enter your password">
+				<br>
 
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>

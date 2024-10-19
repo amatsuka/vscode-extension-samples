@@ -1,3 +1,17 @@
 {
-    "editor.insertSpaces": false
+	"editor.insertSpaces": false,
+	"calicoColors.servers": [
+		{
+			"name": "Production Server",
+            "url": "http://foo",
+            "users": ["1", "2", "3"]
+            
+		},
+        {
+			"name": "Develop Server",
+            "url": "http://bar",
+            "users": ["4", "5", "6"]
+            
+		}
+	]
 }
